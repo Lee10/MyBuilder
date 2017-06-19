@@ -10,7 +10,7 @@ public class Database implements Serializable{
 	private static final long serialVersionUID = -8109251954903284588L;
 	
 	private String ip;
-	private int port;
+	private Integer port;
 	private String sid;
 	private String type;
 	private String username;
@@ -18,7 +18,7 @@ public class Database implements Serializable{
 	
 	public Database(){}
 	
-	public Database(String ip, int port, String sid, String type, String username, String password){
+	public Database(String ip, Integer port, String sid, String type, String username, String password){
 		this.ip = ip;
 		this.port = port;
 		this.sid = sid;
@@ -35,11 +35,11 @@ public class Database implements Serializable{
 		this.ip = ip;
 	}
 	
-	public int getPort() {
+	public Integer getPort() {
 		return port;
 	}
 	
-	public void setPort(int port) {
+	public void setPort(Integer port) {
 		this.port = port;
 	}
 	

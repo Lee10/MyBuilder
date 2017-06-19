@@ -9,12 +9,6 @@
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.jdk.version>1.8</project.build.jdk.version>
-		<junit.version>4.12</junit.version>
-	</properties>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -22,9 +16,9 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5</version>
 				<configuration>
-					<source>${project.build.jdk.version}</source>
-					<target>${project.build.jdk.version}</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -42,7 +36,29 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbutils</groupId>
+			<artifactId>commons-dbutils</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.39</version>
+		</dependency>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc14</artifactId>
+			<version>10.2.0.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.18.0</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
