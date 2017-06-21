@@ -5,7 +5,7 @@ import com.lee.builder.model.Database;
 import com.lee.builder.model.Table;
 import com.lee.builder.service.IDatabaseService;
 import com.lee.builder.utils.DBUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -45,7 +45,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
 		DatabaseMetaData metaData = getMetaData(db);
 		try{
 			if (metaData != null) {
-				
+
 				ResultSet tableSet = metaData.getTables(null, "%", tableName, new String[]{"TABLE"});
 				Table table = null;
 				if (tableSet.next()) {
