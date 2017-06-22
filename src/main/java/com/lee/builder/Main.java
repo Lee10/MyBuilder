@@ -1,15 +1,9 @@
 package com.lee.builder;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.scene.Group;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Tooltip;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -17,18 +11,16 @@ import javafx.stage.Stage;
  */
 public class Main extends Application{
 	
-	//public void start(Stage primaryStage) throws Exception {
-	//	Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/main_win.fxml"));
-	//	primaryStage.setTitle("MyBuilder");
-	//	primaryStage.setScene(new Scene(root, 630, 400));
-	//	//Scene scene = new Scene(root, 550, 250, new Color(0,0,1,1.0));
-	//	//primaryStage.setScene(scene);
-	//
-	//	//ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
-	//	//		"First", "Second", "Third")
-	//	//);
-	//	primaryStage.show();
-	//}
+	public void start(Stage primaryStage) throws Exception {
+		//Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/main_win.fxml"));
+		//primaryStage.setTitle("MyBuilder");
+
+		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/add_database.fxml"));
+		primaryStage.setTitle("新增数据源");
+
+		primaryStage.setScene(new Scene(root, 630, 300));
+		primaryStage.show();
+	}
 
 	public static void main(String[] args) {
 		launch(args);
@@ -86,31 +78,31 @@ public class Main extends Application{
 	//	stage.show();
 	//}
 
-	public void start(Stage primaryStage) {
-		primaryStage.setTitle("MyBuilder");
-		Group root = new Group();
-		Scene scene = new Scene(root, 300, 250, Color.WHITE);
-
-		Text t = new Text();
-		t.setX(10.0);
-		t.setY(50.0);
-		t.setCache(true);//？
-		t.setText("数据源");
-		t.setFill(Color.RED);
-		t.setFont(Font.font(null, FontWeight.BOLD, 30));
-		ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
-					"First", "Second", "Third")
-			);
-		cb.setTooltip(new Tooltip("Select the language"));
-		cb.setLayoutX(100.0);
-		cb.setLayoutY(50.0);
-
-
-		root.getChildren().add(t);
-		root.getChildren().add(cb);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+	//public void start(Stage primaryStage) {
+	//	primaryStage.setTitle("MyBuilder");
+	//	Group root = new Group();
+	//	Scene scene = new Scene(root, 300, 250, Color.WHITE);
+	//
+	//	Text t = new Text();
+	//	t.setX(10.0);
+	//	t.setY(50.0);
+	//	t.setCache(true);//？
+	//	t.setText("数据源");
+	//	t.setFill(Color.RED);
+	//	t.setFont(Font.font(null, FontWeight.BOLD, 30));
+	//	ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
+	//				"First", "Second", "Third")
+	//		);
+	//	cb.setTooltip(new Tooltip("Select the language"));
+	//	cb.setLayoutX(100.0);
+	//	cb.setLayoutY(50.0);
+	//
+	//
+	//	root.getChildren().add(t);
+	//	root.getChildren().add(cb);
+	//	primaryStage.setScene(scene);
+	//	primaryStage.show();
+	//}
 
 	//public void start(Stage stage) {
 	//	VBox vbox = new VBox(20);
