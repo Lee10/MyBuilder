@@ -5,32 +5,45 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <GridPane alignment="CENTER" hgap="10" vgap="10"
           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lee.builder.controller.AddDatabase">
 	<padding>
 		<Insets top="25" right="25" bottom="10" left="25"/>
 	</padding>
+	<columnConstraints>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0"/>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="180.0"/>
+	</columnConstraints>
 
 	<children>
 
-		<Label text="数据源类型" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-		<ComboBox GridPane.columnIndex="1" GridPane.rowIndex="1" prefHeight="26.0" prefWidth="220.0"
-		           fx:id="chooseDatabase" onMouseClicked="#showDatabase"/>
+		<Label text="数据源类型" GridPane.rowIndex="1"/>
+		<Label text="host" GridPane.rowIndex="2"/>
+		<Label text="post" GridPane.rowIndex="3"/>
+		<Label text="sid" GridPane.rowIndex="4"/>
+		<Label text="用户名" GridPane.rowIndex="5"/>
+		<Label text="密码" GridPane.rowIndex="6"/>
 
-		<Label text="host" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-		<TextField GridPane.columnIndex="1" GridPane.rowIndex="2" prefHeight="26.0" prefWidth="169.0"/>
-		<Label text="post" GridPane.columnIndex="2" GridPane.rowIndex="2" prefHeight="28.0" prefWidth="66.0" />
-		<TextField GridPane.columnIndex="3" GridPane.rowIndex="2" prefHeight="26.0" prefWidth="169.0"/>
-		<Label text="sid" GridPane.columnIndex="0" GridPane.rowIndex="3" prefHeight="28.0" prefWidth="66.0"/>
-		<TextField GridPane.columnIndex="1" GridPane.rowIndex="3" prefHeight="26.0" prefWidth="169.0"/>
-		<Label text="用户名" GridPane.columnIndex="0" GridPane.rowIndex="4" prefHeight="28.0" prefWidth="66.0" />
-		<TextField GridPane.columnIndex="1" GridPane.rowIndex="4" prefHeight="26.0" prefWidth="169.0"/>
-		<Label text="密码" GridPane.columnIndex="2" GridPane.rowIndex="4" prefHeight="28.0" prefWidth="66.0" />
-		<TextField GridPane.columnIndex="3" GridPane.rowIndex="4" prefHeight="26.0" prefWidth="169.0"/>
+		<ComboBox GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="180.0"
+		          fx:id="databaseTypeComboBox" onMouseClicked="#showDatabase"/>
+		<TextField fx:id="host" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+		<TextField fx:id="post" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+		<TextField fx:id="sid" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+		<TextField fx:id="username" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+		<TextField fx:id="password" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
 
-		<Button GridPane.columnIndex="1" GridPane.rowIndex="5" mnemonicParsing="false" prefHeight="26.0" prefWidth="217.0" text="测试连接"/>
-		<Button GridPane.columnIndex="3" GridPane.rowIndex="5" mnemonicParsing="false" prefHeight="26.0" prefWidth="217.0" text="保存"/>
+		<HBox GridPane.rowIndex="7" GridPane.columnSpan="2" alignment="CENTER">
+			<children>
+				<Button text="测试连接" mnemonicParsing="false"
+				        fx:id="connTest" onAction="#connTestButtonAction"/>
+				<Button text="保存" mnemonicParsing="false"
+				        fx:id="save" onAction="#saveButtontAction"/>
+			</children>
+		</HBox>
 
 	</children>
 </GridPane>

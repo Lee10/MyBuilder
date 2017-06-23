@@ -52,7 +52,7 @@ public class MainWin implements Initializable{
 	}
 
 	/**
-	 * 生成数据源下拉选，并且选中首项
+	 * 生成数据源下拉选
 	 */
 	@FXML
 	private void showDatabase() {
@@ -62,11 +62,11 @@ public class MainWin implements Initializable{
 				"oracle://172.16.7.4:3306/fswk",
 				"sqlite://172.16.7.4:3306/fswk");
 		databaseComboBox.setItems(options);
-		databaseComboBox.getSelectionModel().select(0);
+		//databaseComboBox.getSelectionModel().select(0);
 	}
 
 	/**
-	 * 生成表下拉选，并且选中首项
+	 * 生成表下拉选
 	 */
 	@FXML
 	private void showTable(Object newValue){
@@ -86,7 +86,7 @@ public class MainWin implements Initializable{
 		ObservableList<String> options = FXCollections.observableArrayList();
 		options.addAll(tableNames);
 		tableComboBox.setItems(options);
-		tableComboBox.getSelectionModel().select(0);
+		//tableComboBox.getSelectionModel().select(0);
 	}
 
 	/**
@@ -95,8 +95,7 @@ public class MainWin implements Initializable{
 	 */
 	@FXML
 	private void showColumn(Object newValue){
-		if (!vBox.getChildren().isEmpty()) vBox.getChildren().clear();
-
+		if (vBox.getChildren().size() != 0) vBox.getChildren().clear();
 		int count=0;
 		if (newValue.equals("table1"))count=4;
 		else count=5;
@@ -112,6 +111,7 @@ public class MainWin implements Initializable{
 	 */
 	@FXML
 	private void databaseSelectedAction(){
+		showDatabase();
 		databaseComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
 
 			@Override
@@ -146,10 +146,10 @@ public class MainWin implements Initializable{
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		String databaseurl = "mysql://172.16.7.4:3306/fswk";
-		String table ="table1";
-		showDatabase();
-		showTable(databaseurl);
-		showColumn(table);
+		//String databaseurl = "mysql://172.16.7.4:3306/fswk";
+		//String table ="table1";
+		//showDatabase();
+		//showTable(databaseurl);
+		//showColumn(table);
 	}
 }
