@@ -27,7 +27,7 @@ public class DBUtils {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public static <T> List<T> select(Database db, String sql, String[] paramArray, Class<T> clazz) throws
+	public static <T> List<T> select(Database db, String sql, Object[] paramArray, Class<T> clazz) throws
 	                                                                                               ClassNotFoundException,
 	                                                                                               SQLException {
 		Connection conn = getConnecttion(db);
@@ -54,8 +54,8 @@ public class DBUtils {
 		Class.forName(JdbcDriverMap.get(db.getType()));
 		return DriverManager.getConnection(url, db.getUsername(), db.getPassword());
 	}
-	
-	private static String buildUrl(Database database) {
+
+	public static String buildUrl(Database database) {
 		
 		StringBuilder urlBuilder = new StringBuilder();
 		if (DB_TYPE_MYSQL.equals(database.getType())) {
@@ -68,8 +68,8 @@ public class DBUtils {
 		}
 		return urlBuilder.toString();
 	}
-	
-	
+
+
 	public static final String DB_TYPE_MYSQL = "mysql";
 	public static final String DB_TYPE_ORACLE = "oracle";
 	public static final String DB_TYPE_SQLITE = "sqlite";
@@ -80,6 +80,6 @@ public class DBUtils {
 		JdbcDriverMap.put(DB_TYPE_ORACLE, "oracle.jdbc.driver.OracleDriver");
 		JdbcDriverMap.put(DB_TYPE_SQLITE, "org.sqlite.JDBC");
 	}
-	
-	
+
+
 }

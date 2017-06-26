@@ -15,16 +15,18 @@ public class Database implements Serializable{
 	private String type;
 	private String username;
 	private String password;
-	
+	private String url;
+
 	public Database(){}
 	
-	public Database(String ip, Integer port, String sid, String type, String username, String password){
+	public Database(String ip, Integer port, String sid, String type, String username, String password, String url){
 		this.ip = ip;
 		this.port = port;
 		this.sid = sid;
 		this.type = type;
 		this.username = username;
 		this.password = password;
+		this.url = url;
 	}
 	
 	public String getIp() {
@@ -73,5 +75,13 @@ public class Database implements Serializable{
 	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }

@@ -9,13 +9,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
@@ -70,36 +67,27 @@ public class AddDatabase implements Initializable {
 	 */
 	@FXML
 	private void saveButtontAction() {
-		// 0 连接SQLite的JDBC
-		String url="jdbc:sqlite://E:\\work\\code\\MyBuilder\\src\\main\\resources\\conf.db";
-		try {
-			Class.forName("org.sqlite.JDBC");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		// 1 建立一个数据库名zieckey.db的连接，如果不存在就在当前目录下创建之
-		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection(url);
-			System.out.println("连接成功");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("连接失败");
-		}
-
-
+		Database sqlite = new Database();
+		sqlite.setType(DBUtils.DB_TYPE_SQLITE);
+		sqlite.setSid("E:\\work\\code\\MyBuilder\\src\\main\\resources\\conf.db");
 		Database db = getDatabase();
-		String sql ="insert or replace into database(ip,port,sid,type,username,password) values(?,?,?,?,?,?)";
-		Object[] params={db.getIp(),db.getPort(),db.getSid(),db.getType(),db.getUsername(),db.getPassword()};
+		String sql = "insert or replace into database(ip,port,sid,type,username,password,url) values(?,?,?,?,?,?,?)";
+		Object[] params = {db.getIp(), db.getPort(), db.getSid(), db.getType(), db.getUsername(), db.getPassword(),db.getUrl()};
+
 		try {
-			int count= new QueryRunner().update(conn, sql, params);
-			System.out.println(count>0?"入库成功":"入库失败");
-		} catch (SQLException e) {
+			int count = DBUtils.update(sqlite, sql, params);
+			System.out.println(count > 0 ? "入库成功" : "入库失败");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private Database getDatabase(){
+	/**
+	 * 获取新增数据源页面输入值
+	 *
+	 * @return
+	 */
+	private Database getDatabase() {
 		Database database = new Database();
 		database.setType((String) databaseTypeComboBox.getSelectionModel().getSelectedItem());
 		database.setIp(host.getText());
@@ -107,9 +95,16 @@ public class AddDatabase implements Initializable {
 		database.setSid(sid.getText());
 		database.setUsername(username.getText());
 		database.setPassword(password.getText());
+		database.setUrl(DBUtils.buildUrl(database));
 		return database;
 	}
 
+	/**
+	 * 初始化
+	 *
+	 * @param location
+	 * @param resources
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
