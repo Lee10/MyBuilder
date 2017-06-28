@@ -1,10 +1,12 @@
 package com.lee.builder.model;
 
+import javafx.scene.control.CheckBox;
+
 /**
  * Created by lee on 2017/6/16.
  */
 public class Column {
-	
+	private CheckBox cb;
 	private String columnName;
 	private String columnComment;
 	private String columnType;
@@ -15,6 +17,7 @@ public class Column {
 		this.columnName = columnName;
 		this.columnComment = columnComment;
 		this.columnType = columnType;
+		this.cb = new CheckBox(this.columnName);
 	}
 	
 	public String getColumnName() {
@@ -55,5 +58,13 @@ public class Column {
 	
 	public void setJavaType(String javaType) {
 		this.javaType = javaType;
+	}
+
+	public CheckBox getCb() {
+		return cb;
+	}
+
+	public void setCb(CheckBox cb) {
+		this.cb = cb;
 	}
 }

@@ -10,11 +10,15 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableRow?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.shape.Box?>
 <?import javafx.scene.layout.VBox?>
+<?import com.sun.javafx.scene.control.skin.TableHeaderRow?>
+<?import javafx.scene.control.ScrollPane?>
 <GridPane alignment="CENTER" hgap="10" vgap="10" stylesheets="@../css/application.css"
           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lee.builder.controller.MainWin">
 	<padding>
@@ -29,22 +33,30 @@
 	<children>
 		<Label text="数据源" GridPane.rowIndex="1"/>
 		<Label text="表名" GridPane.rowIndex="2"/>
-		<Label text="表字段" GridPane.rowIndex="3"/>
+		<!--<Label text="表字段" GridPane.rowIndex="3"/>-->
 		<!--声明一个Button元素，fx:id用于给该Button一个标示，用于和Controller类中的Button实例进行绑定-->
 		<!--onAction用于绑定Button的点击事件，handleButtonAction前面的#用于和Controller中处理函数进行绑定-->
 		<Button text="新增" fx:id="add" onAction="#addDatabase"
 		        GridPane.rowIndex="1" GridPane.columnIndex="2" mnemonicParsing="false"/>
 		<ComboBox fx:id="databaseComboBox" onAction="#databaseSelectedAction"
 		          GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="160.0"/>
-		<ComboBox fx:id="tableComboBox" onMouseClicked="#tableSelectedAction"
+		<ComboBox fx:id="tableComboBox" onAction="#tableSelectedAction"
 		          GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="160.0"/>
-		<Separator GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
-		<VBox fx:id="vBox" GridPane.rowIndex="4" GridPane.columnSpan="3" alignment="CENTER">
+		<Separator GridPane.rowIndex="3"  GridPane.columnSpan="3"/>
+		<VBox fx:id="vBox" GridPane.rowIndex="4" GridPane.columnSpan="3" alignment="TOP_LEFT">
 			<children>
-
+				<Label text="表字段"/>
+				<TableView fx:id="tableView">
+				<columns>
+				<TableColumn fx:id="cb" prefWidth="200.0" text="字段名"/>
+				<TableColumn fx:id="columnComment" prefWidth="200.0" text="注释"/>
+				</columns>
+				</TableView>
 			</children>
 		</VBox>
-		<HBox GridPane.rowIndex="10" GridPane.columnSpan="3" alignment="CENTER">
+
+
+		<HBox GridPane.rowIndex="8" GridPane.columnSpan="3" alignment="CENTER">
 			<children>
 				<CheckBox text="Model"/>
 				<CheckBox text="Mapper" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
@@ -53,5 +65,10 @@
 				<CheckBox text="Controller" GridPane.rowIndex="10" GridPane.columnIndex="4"/>
 			</children>
 		</HBox>
+		<VBox GridPane.rowIndex="10" GridPane.columnSpan="3" alignment="CENTER">
+			<children>
+				<Button text="生成" fx:id="create" onAction="#create" prefWidth="150.0" mnemonicParsing="false"/>
+			</children>
+		</VBox>
 	</children>
 </GridPane>
