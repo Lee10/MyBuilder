@@ -55,14 +55,13 @@
 			</children>
 		</VBox>
 
-
 		<HBox GridPane.rowIndex="8" GridPane.columnSpan="3" alignment="CENTER">
 			<children>
-				<CheckBox text="Model"/>
-				<CheckBox text="Mapper" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
-				<CheckBox text="Dao" GridPane.rowIndex="10" GridPane.columnIndex="2"/>
-				<CheckBox text="Service" GridPane.rowIndex="10" GridPane.columnIndex="3"/>
-				<CheckBox text="Controller" GridPane.rowIndex="10" GridPane.columnIndex="4"/>
+				<CheckBox fx:id="mapper" text="Mapper"/>
+				<CheckBox fx:id="model" text="Model" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+				<CheckBox fx:id="dao" text="Dao" GridPane.rowIndex="10" GridPane.columnIndex="2"/>
+				<CheckBox fx:id="service" text="Service" GridPane.rowIndex="10" GridPane.columnIndex="3"/>
+				<CheckBox fx:id="controller" text="Controller" GridPane.rowIndex="10" GridPane.columnIndex="4"/>
 			</children>
 		</HBox>
 		<VBox GridPane.rowIndex="10" GridPane.columnSpan="3" alignment="CENTER">

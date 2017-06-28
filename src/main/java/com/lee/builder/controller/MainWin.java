@@ -1,13 +1,13 @@
 package com.lee.builder.controller;
 
-import com.lee.builder.model.CheckBoxColumn;
 import com.lee.builder.model.Column;
 import com.lee.builder.model.Database;
 import com.lee.builder.model.Table;
 import com.lee.builder.service.IDatabaseService;
+import com.lee.builder.service.IGengerateService;
 import com.lee.builder.service.impl.DatabaseServiceImpl;
+import com.lee.builder.service.impl.GenerateServiceImpl;
 import com.lee.builder.utils.DBUtils;
-import com.lee.builder.utils.JsonUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import sun.util.resources.cldr.aa.CalendarData_aa_DJ;
 
 import java.io.IOException;
 import java.net.URL;
@@ -65,7 +66,6 @@ public class MainWin implements Initializable {
 		Stage stage = (Stage) getWindow(event);
 		startSub(stage);
 	}
-
 
 
 	/**
@@ -165,7 +165,6 @@ public class MainWin implements Initializable {
 	}
 
 
-
 	/**
 	 * 生成表名下拉选
 	 */
@@ -196,6 +195,7 @@ public class MainWin implements Initializable {
 		List<String> tableNames = databaseService.getTableNameList(db);
 		return tableNames;
 	}
+
 	@FXML
 	private TableView tableView;
 	@FXML
@@ -203,30 +203,81 @@ public class MainWin implements Initializable {
 	@FXML
 	private TableColumn columnComment;
 
-	/** 选中的数据源 **/
+	@FXML
+	private CheckBox mapper;
+	@FXML
+	private CheckBox model;
+	@FXML
+	private CheckBox dao;
+	@FXML
+	private CheckBox service;
+	@FXML
+	private CheckBox controller;
+
+	/**
+	 * 选中的数据源
+	 **/
 	private Database selectedDB;
-	/** 选中的表 **/
+	/**
+	 * 选中的表
+	 **/
 	private Table selectedTable;
-	/** 选中的列 **/
+	/**
+	 * 选中的列
+	 **/
 	private List<Column> selectedColumns;
+
 	/**
 	 * 生成文件
+	 *
 	 * @param event
 	 */
 	@FXML
-	public void create(ActionEvent event){
+	public void create(ActionEvent event) {
 		System.out.println("生成文件");
-		ObservableList<Column> list=tableView.getItems();
+		ObservableList<Column> list = tableView.getItems();
 		selectedColumns = new ArrayList<Column>();
-		for(Column o:list){
-			if(o.getCb().isSelected()){
-				System.out.println(o.getColumnName()+"--"+o.getColumnComment());
+		for (Column o : list) {
+			if (o.getCb().isSelected()) {
+				System.out.println(o.getColumnName() + "--" + o.getColumnComment());
 				selectedColumns.add(o);
 			}
 		}
 		System.out.println(selectedColumns.size());
 		selectedTable.setColumns(selectedColumns);
-		System.out.println(selectedTable);
+		if (mapper.isSelected()){
+			IDatabaseService databaseService = new DatabaseServiceImpl();
+			IGengerateService gengerateService = new GenerateServiceImpl();
+			String className = capFirstColumnName(selectedTable.getTableName());
+			System.out.println(className);
+			boolean flag = gengerateService.generateModelClass("ModelTemplete.java", "com.lee.coderepo.model;", "C:\\Users\\lzw\\Desktop\\MyBuilder\\"+className+".java", selectedTable);
+			System.out.println(flag);
+		}
+		if (model.isSelected()){
+			System.out.println("model is selected");
+		}
+		if (dao.isSelected()){
+			System.out.println("dao is selected");
+		}
+		if (service.isSelected()){
+			System.out.println("service is selected");
+		}
+		if (controller.isSelected()){
+			System.out.println("controller is selected");
+		}
+	}
+
+	private String capFirstColumnName(String columnName){
+
+		String[] arr = StringUtils.split(columnName, "_");
+		if(arr != null && arr.length > 0) {
+			StringBuilder strBuilder = new StringBuilder(StringUtils.capitalize(arr[0]));
+			for (int i = 1; i < arr.length; i++) {
+				strBuilder.append(StringUtils.capitalize(arr[i]));
+			}
+			return strBuilder.toString();
+		}
+		return columnName;
 	}
 
 	/**
@@ -300,7 +351,7 @@ public class MainWin implements Initializable {
 			public void changed(ObservableValue<? extends String> selected, String oldValue, String newValue) {
 				System.out.println("选中table");
 				System.out.println("newValue--->" + newValue);
-				if (newValue != null){
+				if (newValue != null) {
 					showColumnByTableName(newValue);
 					selectedTable = new Table(newValue, newValue, new ArrayList<>());
 				}
@@ -309,7 +360,6 @@ public class MainWin implements Initializable {
 		});
 
 	}
-
 
 
 	/**
