@@ -8,8 +8,6 @@ import com.lee.builder.service.IGengerateService;
 import com.lee.builder.service.impl.DatabaseServiceImpl;
 import com.lee.builder.service.impl.GenerateServiceImpl;
 import com.lee.builder.utils.DBUtils;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,7 +17,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -27,13 +24,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import sun.util.resources.cldr.aa.CalendarData_aa_DJ;
 
 import java.io.IOException;
 import java.net.URL;
@@ -42,17 +37,65 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * Created by lee on 2017/6/14.
+ * Created by lzw on 2017/6/14.
+ * MyBuilder主页面
  */
 public class MainWin implements Initializable {
+	/**
+	 * 数据源下拉框
+	 **/
 	@FXML
 	private ComboBox<String> databaseComboBox;
+	/**
+	 * 表名下拉框
+	 **/
 	@FXML
 	private ComboBox tableComboBox;
+	/** 新增数据源按钮 **/
+	//@FXML
+	//private Button add;
+	/**
+	 * 字段列表
+	 **/
 	@FXML
-	private VBox vBox;
+	private TableView tableView;
+	/**
+	 * 第1列(字段名) 类型:CheckBox
+	 **/
 	@FXML
-	private Button add;
+	private TableColumn cb;
+	/**
+	 * 第2列(注释) 类型:String
+	 **/
+	@FXML
+	private TableColumn columnComment;
+	/**
+	 * 以下为5个CheckBox 选择需要生成的代码模板
+	 **/
+	@FXML
+	private CheckBox mapper;
+	@FXML
+	private CheckBox model;
+	@FXML
+	private CheckBox dao;
+	@FXML
+	private CheckBox service;
+	@FXML
+	private CheckBox controller;
+
+	/** 以下3个为全局变量 **/
+	/**
+	 * 选中的数据源
+	 **/
+	private Database selectedDB;
+	/**
+	 * 选中的表
+	 **/
+	private Table selectedTable;
+	/**
+	 * 选中的列
+	 **/
+	private List<Column> selectedColumns;
 
 	/**
 	 * 打开新增数据源界面
@@ -62,7 +105,7 @@ public class MainWin implements Initializable {
 	 * @throws IOException
 	 */
 	@FXML
-	public void addDatabase(ActionEvent event) throws IOException {
+	public void add(ActionEvent event) throws IOException {
 		Stage stage = (Stage) getWindow(event);
 		startSub(stage);
 	}
@@ -111,7 +154,7 @@ public class MainWin implements Initializable {
 
 
 	/**
-	 * 生成数据源下拉选
+	 * 生成数据源下拉选 (初始化时需要加载)
 	 */
 	private void showDatabase() {
 		List<String> strList = getDBUrl();
@@ -121,7 +164,23 @@ public class MainWin implements Initializable {
 	}
 
 	/**
-	 * 查询本地sqlite库database
+	 * 通过List<Database>转化成List<String>
+	 *
+	 * @param list
+	 * @return
+	 */
+	private List<String> getDBUrl() {
+		List<Database> list = listDatabase(new Database());
+		List<String> strList = new ArrayList<String>();
+		if (CollectionUtils.isEmpty(list)) return strList;
+		for (Database database : list) {
+			strList.add(DBUtils.buildUrl(database));
+		}
+		return strList;
+	}
+
+	/**
+	 * 查询本地sqlite库database,获得数据源列表List<Database>
 	 *
 	 * @return
 	 */
@@ -148,36 +207,33 @@ public class MainWin implements Initializable {
 		return list;
 	}
 
+
 	/**
-	 * 通过List<Database>生成List<String>
-	 *
-	 * @param list
-	 * @return
+	 * 选中数据源后显示对应的表名
 	 */
-	private List<String> getDBUrl() {
-		List<Database> list = listDatabase(new Database());
-		List<String> strList = new ArrayList<String>();
-		if (CollectionUtils.isEmpty(list)) return strList;
-		for (Database database : list) {
-			strList.add(DBUtils.buildUrl(database));
-		}
-		return strList;
+	@FXML
+	public void databaseSelectedAction(ActionEvent event) {
+		tableComboBox.getItems().clear();
+		tableView.getItems().clear();
+		if (databaseComboBox.getSelectionModel().getSelectedItem() == null) return;
+		String selectedDBUrl = databaseComboBox.getSelectionModel().getSelectedItem().toString();
+		if (StringUtils.isNotEmpty(selectedDBUrl)) showTableByUrl(selectedDBUrl);
 	}
 
-
 	/**
-	 * 生成表名下拉选
+	 * 根据数据源url 生成表名下拉选
 	 */
-	private void showTableByUrl(Object newValue) {
-
+	private void showTableByUrl(String url) {
 		//通过选择的url查询sqlite数据库database的数据库信息
 		selectedDB = new Database();
-		selectedDB.setUrl(String.valueOf(newValue));
+		selectedDB.setUrl(url);
 		List<Database> dbList = listDatabase(selectedDB);
 
 		List<String> tableNames = null;
 		if (CollectionUtils.isNotEmpty(dbList)) {
+			//得到选中的db->selectedDB
 			selectedDB = dbList.get(0);
+			//查询选中的数据源(selectedDB)的所有表名
 			tableNames = listTableNames(selectedDB);
 		}
 		ObservableList<String> options = FXCollections.observableArrayList();
@@ -186,7 +242,7 @@ public class MainWin implements Initializable {
 	}
 
 	/**
-	 * 查询用户选择的数据源地址下的所有表名
+	 * 查询选中的数据源(selectedDB)的所有表名
 	 *
 	 * @return
 	 */
@@ -196,36 +252,48 @@ public class MainWin implements Initializable {
 		return tableNames;
 	}
 
+	/**
+	 * 选中表名后显示表中的列名
+	 */
 	@FXML
-	private TableView tableView;
-	@FXML
-	private TableColumn cb;
-	@FXML
-	private TableColumn columnComment;
-
-	@FXML
-	private CheckBox mapper;
-	@FXML
-	private CheckBox model;
-	@FXML
-	private CheckBox dao;
-	@FXML
-	private CheckBox service;
-	@FXML
-	private CheckBox controller;
+	public void tableSelectedAction(ActionEvent event) {
+		tableView.getItems().clear();
+		if (tableComboBox.getSelectionModel().getSelectedItem() == null) return;
+		String selectedTableName = tableComboBox.getSelectionModel().getSelectedItem().toString();
+		if (StringUtils.isNotEmpty(selectedTableName)) {
+			showColumnByTableName(selectedTableName);
+			selectedTable = new Table(selectedTableName, selectedTableName, new ArrayList<>());
+		}
+	}
 
 	/**
-	 * 选中的数据源
-	 **/
-	private Database selectedDB;
+	 * 根据选中的表名查询对应的数据库生成列名
+	 *
+	 * @param newValue
+	 */
+	private void showColumnByTableName(String tableName) {
+		Table table = listTable(tableName, selectedDB);
+		List<Column> columns = table.getColumns();
+		ObservableList<Column> options = FXCollections.observableArrayList();
+		options.addAll(columns);
+		cb.setCellValueFactory(new PropertyValueFactory<>("cb"));
+		columnComment.setCellValueFactory(new PropertyValueFactory<>("columnComment"));
+		tableView.setEditable(true);
+		tableView.setItems(options);
+	}
+
 	/**
-	 * 选中的表
-	 **/
-	private Table selectedTable;
-	/**
-	 * 选中的列
-	 **/
-	private List<Column> selectedColumns;
+	 * 根据表名和表所在的数据库查询表
+	 * @param tableName
+	 * @param db
+	 * @return
+	 */
+	private Table listTable(String tableName, Database db) {
+		IDatabaseService databaseService = new DatabaseServiceImpl();
+		Table table = databaseService.getTableByName(tableName, db);
+		return table;
+	}
+
 
 	/**
 	 * 生成文件
@@ -245,32 +313,32 @@ public class MainWin implements Initializable {
 		}
 		System.out.println(selectedColumns.size());
 		selectedTable.setColumns(selectedColumns);
-		if (mapper.isSelected()){
+		if (mapper.isSelected()) {
 			IDatabaseService databaseService = new DatabaseServiceImpl();
 			IGengerateService gengerateService = new GenerateServiceImpl();
 			String className = capFirstColumnName(selectedTable.getTableName());
 			System.out.println(className);
-			boolean flag = gengerateService.generateModelClass("ModelTemplete.java", "com.lee.coderepo.model;", "C:\\Users\\lzw\\Desktop\\MyBuilder\\"+className+".java", selectedTable);
+			boolean flag = gengerateService.generateModelClass("ModelTemplete.java", "com.lee.coderepo.model;", "C:\\Users\\lzw\\Desktop\\MyBuilder\\" + className + ".java", selectedTable);
 			System.out.println(flag);
 		}
-		if (model.isSelected()){
+		if (model.isSelected()) {
 			System.out.println("model is selected");
 		}
-		if (dao.isSelected()){
+		if (dao.isSelected()) {
 			System.out.println("dao is selected");
 		}
-		if (service.isSelected()){
+		if (service.isSelected()) {
 			System.out.println("service is selected");
 		}
-		if (controller.isSelected()){
+		if (controller.isSelected()) {
 			System.out.println("controller is selected");
 		}
 	}
 
-	private String capFirstColumnName(String columnName){
+	private String capFirstColumnName(String columnName) {
 
 		String[] arr = StringUtils.split(columnName, "_");
-		if(arr != null && arr.length > 0) {
+		if (arr != null && arr.length > 0) {
 			StringBuilder strBuilder = new StringBuilder(StringUtils.capitalize(arr[0]));
 			for (int i = 1; i < arr.length; i++) {
 				strBuilder.append(StringUtils.capitalize(arr[i]));
@@ -279,88 +347,6 @@ public class MainWin implements Initializable {
 		}
 		return columnName;
 	}
-
-	/**
-	 * 生成列名
-	 *
-	 * @param newValue
-	 */
-	private void showColumnByTableName(String tableName) {
-		if (vBox.getChildren().size() != 0) vBox.getChildren().clear();
-		Table table = listTable(tableName, selectedDB);
-		List<Column> columns = table.getColumns();
-
-		ObservableList<Column> options = FXCollections.observableArrayList();
-		options.addAll(columns);
-
-		cb.setCellValueFactory(new PropertyValueFactory<>("cb"));
-		columnComment.setCellValueFactory(new PropertyValueFactory<>("columnComment"));
-		tableView.setEditable(true);
-		tableView.setItems(options);
-		vBox.getChildren().addAll(tableView);
-	}
-
-
-	private Table listTable(String tableName, Database db) {
-		IDatabaseService databaseService = new DatabaseServiceImpl();
-		Table table = databaseService.getTableByName(tableName, db);
-		return table;
-	}
-
-
-	/**
-	 * 选中数据源后显示其中的表明
-	 */
-	@FXML
-	public void databaseSelectedAction(ActionEvent event) {
-		//以后要删除掉
-		//showDatabase();
-
-		//databaseComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-		//	@Override
-		//	public void changed(ObservableValue<? extends String> selected, String oldValue, String newValue) {
-		//		System.out.println("成功选中");
-		//		System.out.println("selected--->" + selected);
-		//		System.out.println("oldValue--->" + oldValue);
-		//		System.out.println("newValue--->" + newValue);
-		//		if (oldValue != null) {
-		//
-		//		}
-		//	}
-		//});
-
-		databaseComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> selected, String oldValue, String newValue) {
-				System.out.println("选中数据源");
-				System.out.println("newValue--->" + newValue);
-				if (newValue != null) showTableByUrl(newValue);
-			}
-		});
-
-	}
-
-	/**
-	 * 选中表后显示其中的列名
-	 */
-	@FXML
-	public void tableSelectedAction() {
-		tableComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> selected, String oldValue, String newValue) {
-				System.out.println("选中table");
-				System.out.println("newValue--->" + newValue);
-				if (newValue != null) {
-					showColumnByTableName(newValue);
-					selectedTable = new Table(newValue, newValue, new ArrayList<>());
-				}
-
-			}
-		});
-
-	}
-
 
 	/**
 	 * 初始化
