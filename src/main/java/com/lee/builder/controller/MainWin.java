@@ -24,13 +24,16 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -83,7 +86,16 @@ public class MainWin implements Initializable {
 	private CheckBox service;
 	@FXML
 	private CheckBox controller;
-
+	/**
+	 * 包名
+	 **/
+	@FXML
+	private TextField packageName;
+	/**
+	 * 生成文件路径
+	 **/
+	@FXML
+	private TextField path;
 	/** 以下3个为全局变量 **/
 	/**
 	 * 选中的数据源
@@ -109,6 +121,18 @@ public class MainWin implements Initializable {
 	public void add(ActionEvent event) throws IOException {
 		Stage stage = (Stage) getWindow(event);
 		startSub(stage);
+	}
+
+	/**
+	 * 打开目录选择
+	 *
+	 * @param event
+	 */
+	@FXML
+	public void browse(ActionEvent event) {
+		final DirectoryChooser directoryChooser = new DirectoryChooser();
+		final File selectedDirectory = directoryChooser.showDialog((Stage) getWindow(event));
+		if (selectedDirectory != null) path.setText(selectedDirectory.getAbsolutePath());
 	}
 
 
@@ -314,19 +338,19 @@ public class MainWin implements Initializable {
 		selectedColumns = new ArrayList<Column>();
 		for (CheckBoxColumn o : list) {
 			if (o.getCb().isSelected()) {
-				System.out.println(o.getColumnName() + "--" + o.getColumnComment());
 				Column column = new Column(o.getColumnName(), o.getColumnComment(), o.getColumnType());
 				selectedColumns.add(column);
 			}
 		}
-		System.out.println(selectedColumns.size());
 		selectedTable.setColumns(selectedColumns);
 		if (mapper.isSelected()) {
 			IDatabaseService databaseService = new DatabaseServiceImpl();
 			IGengerateService gengerateService = new GenerateServiceImpl();
 			String className = capFirstColumnName(selectedTable.getTableName());
-			System.out.println(className);
-			boolean flag = gengerateService.generateModelClass("ModelTemplete.java", "com.lee.coderepo.model;", "C:\\Users\\lzw\\Desktop\\MyBuilder\\" + className + ".java", selectedTable);
+			File file = new File(path.getText());
+			//判断文件夹是否存在,如果不存在则创建文件夹
+			if (!file.exists()) file.mkdir();
+			boolean flag = gengerateService.generateModelClass("ModelTemplete.java", packageName.getText(), path.getText() + "\\" + className + ".java", selectedTable);
 			System.out.println(flag);
 		}
 		if (model.isSelected()) {
