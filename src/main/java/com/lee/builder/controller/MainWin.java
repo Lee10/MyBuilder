@@ -24,6 +24,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
@@ -96,6 +97,10 @@ public class MainWin implements Initializable {
 	 **/
 	@FXML
 	private TextField path;
+	/** 打印日志 **/
+	@FXML
+	private TextArea log;
+
 	/** 以下3个为全局变量 **/
 	/**
 	 * 选中的数据源
@@ -333,7 +338,6 @@ public class MainWin implements Initializable {
 	 */
 	@FXML
 	public void create(ActionEvent event) {
-		System.out.println("生成文件");
 		ObservableList<CheckBoxColumn> list = tableView.getItems();
 		selectedColumns = new ArrayList<Column>();
 		for (CheckBoxColumn o : list) {
@@ -343,27 +347,38 @@ public class MainWin implements Initializable {
 			}
 		}
 		selectedTable.setColumns(selectedColumns);
+		log.setEditable(false);
+		boolean flag = false;
 		if (mapper.isSelected()) {
+			flag = false;
+			if (flag) log.appendText("生成mapper文件成功\n");
+			else log.appendText("生成mapper文件失败\n");
+		}
+		if (model.isSelected()) {
 			IDatabaseService databaseService = new DatabaseServiceImpl();
 			IGengerateService gengerateService = new GenerateServiceImpl();
 			String className = capFirstColumnName(selectedTable.getTableName());
 			File file = new File(path.getText());
 			//判断文件夹是否存在,如果不存在则创建文件夹
 			if (!file.exists()) file.mkdir();
-			boolean flag = gengerateService.generateModelClass("ModelTemplete.java", packageName.getText(), path.getText() + "\\" + className + ".java", selectedTable);
-			System.out.println(flag);
-		}
-		if (model.isSelected()) {
-			System.out.println("model is selected");
+			flag = gengerateService.generateModelClass("ModelTemplete.java", packageName.getText(), path.getText() + "\\" + className + ".java", selectedTable);
+			if (flag) log.appendText("生成model文件成功\n");
+			else log.appendText("生成model文件失败\n");
 		}
 		if (dao.isSelected()) {
-			System.out.println("dao is selected");
+			flag = false;
+			if (flag) log.appendText("生成dao文件成功\n");
+			else log.appendText("生成dao文件失败\n");
 		}
 		if (service.isSelected()) {
-			System.out.println("service is selected");
+			flag = false;
+			if (flag) log.appendText("生成service文件成功\n");
+			else log.appendText("生成service文件失败\n");
 		}
 		if (controller.isSelected()) {
-			System.out.println("controller is selected");
+			flag = false;
+			if (flag) log.appendText("生成controller文件成功\n");
+			else log.appendText("生成controller文件失败\n");
 		}
 	}
 

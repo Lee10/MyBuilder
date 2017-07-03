@@ -21,10 +21,11 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
 <GridPane alignment="CENTER" hgap="10" vgap="10" stylesheets="@../css/application.css"
           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lee.builder.controller.MainWin">
 	<padding>
-		<Insets top="25" right="25" bottom="10" left="25"/>
+		<Insets top="25" right="25" bottom="20" left="25"/>
 	</padding>
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="80.0"/>
@@ -34,14 +35,11 @@
 
 	<children>
 		<Label text="数据源" GridPane.rowIndex="1"/>
-		<Label text="表名" GridPane.rowIndex="2"/>
-		<!--<Label text="表字段" GridPane.rowIndex="3"/>-->
-		<!--声明一个Button元素，fx:id用于给该Button一个标示，用于和Controller类中的Button实例进行绑定-->
-		<!--onAction用于绑定Button的点击事件，handleButtonAction前面的#用于和Controller中处理函数进行绑定-->
-		<Button text="新增" onAction="#add"
-		        GridPane.rowIndex="1" GridPane.columnIndex="2" mnemonicParsing="false"/>
 		<ComboBox fx:id="databaseComboBox" onAction="#databaseSelectedAction"
 		          GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="160.0"/>
+		<Button text="新增" onAction="#add"
+		        GridPane.rowIndex="1" GridPane.columnIndex="2" mnemonicParsing="false"/>
+		<Label text="表名" GridPane.rowIndex="2"/>
 		<ComboBox fx:id="tableComboBox" onAction="#tableSelectedAction"
 		          GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="160.0"/>
 		<Separator GridPane.rowIndex="3"  GridPane.columnSpan="3"/>
@@ -56,7 +54,6 @@
 				</TableView>
 			</children>
 		</VBox>
-
 		<HBox GridPane.rowIndex="8" GridPane.columnSpan="3" alignment="CENTER">
 			<children>
 				<CheckBox fx:id="mapper" text="Mapper"/>
@@ -66,17 +63,18 @@
 				<CheckBox fx:id="controller" text="Controller" GridPane.rowIndex="10" GridPane.columnIndex="4"/>
 			</children>
 		</HBox>
-
 		<Label text="包名:" GridPane.rowIndex="9"/>
 		<TextField fx:id="packageName" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
 		<Label text="路径:" GridPane.rowIndex="10"/>
 		<TextField fx:id="path" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
-		<Button text="请选择" onAction="#browse" GridPane.rowIndex="10" GridPane.columnIndex="2"/>
-
-		<VBox GridPane.rowIndex="11" GridPane.columnSpan="3" alignment="CENTER">
+		<Button text="请选择" onAction="#browse" alignment="CENTER"
+		        GridPane.rowIndex="10" GridPane.columnIndex="2"/>
+		<TextArea fx:id="log" GridPane.rowIndex="11" GridPane.columnSpan="3"/>
+		<VBox GridPane.rowIndex="12" GridPane.columnSpan="3" alignment="CENTER">
 			<children>
 				<Button text="生成" onAction="#create" prefWidth="150.0" mnemonicParsing="false"/>
 			</children>
 		</VBox>
+
 	</children>
 </GridPane>
