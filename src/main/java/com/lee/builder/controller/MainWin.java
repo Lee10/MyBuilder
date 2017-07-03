@@ -1,5 +1,6 @@
 package com.lee.builder.controller;
 
+import com.lee.builder.model.CheckBoxColumn;
 import com.lee.builder.model.Column;
 import com.lee.builder.model.Database;
 import com.lee.builder.model.Table;
@@ -274,8 +275,13 @@ public class MainWin implements Initializable {
 	private void showColumnByTableName(String tableName) {
 		Table table = listTable(tableName, selectedDB);
 		List<Column> columns = table.getColumns();
-		ObservableList<Column> options = FXCollections.observableArrayList();
-		options.addAll(columns);
+		List<CheckBoxColumn> checkBoxColumns = new ArrayList<CheckBoxColumn>();
+		for (Column c : columns) {
+			CheckBoxColumn cbColumn = new CheckBoxColumn(c.getColumnName(), c.getColumnName(), c.getColumnType());
+			checkBoxColumns.add(cbColumn);
+		}
+		ObservableList<CheckBoxColumn> options = FXCollections.observableArrayList();
+		options.addAll(checkBoxColumns);
 		cb.setCellValueFactory(new PropertyValueFactory<>("cb"));
 		columnComment.setCellValueFactory(new PropertyValueFactory<>("columnComment"));
 		tableView.setEditable(true);
@@ -284,6 +290,7 @@ public class MainWin implements Initializable {
 
 	/**
 	 * 根据表名和表所在的数据库查询表
+	 *
 	 * @param tableName
 	 * @param db
 	 * @return
@@ -303,12 +310,13 @@ public class MainWin implements Initializable {
 	@FXML
 	public void create(ActionEvent event) {
 		System.out.println("生成文件");
-		ObservableList<Column> list = tableView.getItems();
+		ObservableList<CheckBoxColumn> list = tableView.getItems();
 		selectedColumns = new ArrayList<Column>();
-		for (Column o : list) {
+		for (CheckBoxColumn o : list) {
 			if (o.getCb().isSelected()) {
 				System.out.println(o.getColumnName() + "--" + o.getColumnComment());
-				selectedColumns.add(o);
+				Column column = new Column(o.getColumnName(), o.getColumnComment(), o.getColumnType());
+				selectedColumns.add(column);
 			}
 		}
 		System.out.println(selectedColumns.size());
