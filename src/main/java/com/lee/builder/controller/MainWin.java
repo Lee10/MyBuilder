@@ -330,7 +330,7 @@ public class MainWin implements Initializable {
 		List<Column> columns = table.getColumns();
 		checkBoxColumns = new ArrayList<CheckBoxColumn>();
 		for (Column c : columns) {
-			CheckBoxColumn cbColumn = new CheckBoxColumn(c.getColumnName(), c.getColumnName(), c.getColumnType());
+			CheckBoxColumn cbColumn = new CheckBoxColumn(c.getColumnName(), c.getColumnComment(), c.getColumnType());
 			checkBoxColumns.add(cbColumn);
 		}
 		ObservableList<CheckBoxColumn> options = FXCollections.observableArrayList();

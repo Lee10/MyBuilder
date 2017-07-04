@@ -17,7 +17,7 @@ import java.util.Map;
  * Created by lee on 2017/6/22.
  */
 public class GenerateServiceImpl implements IGengerateService {
-	
+
 	@Override
 	public boolean generateModelClass(String templeteName, String packageName, String path, Table table, List<String> packageList) {
 		
