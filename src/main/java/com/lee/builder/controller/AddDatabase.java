@@ -87,7 +87,7 @@ public class AddDatabase implements Initializable {
 		}
 		Database sqlite = new Database();
 		sqlite.setType(DBUtils.DB_TYPE_SQLITE);
-		sqlite.setSid("E:\\work\\code\\MyBuilder\\src\\main\\resources\\conf.db");
+		sqlite.setSid(AddDatabase.class.getClassLoader().getResource("conf.db").getPath());
 		Database db = getDatabase();
 		String sql = "insert or replace into database(ip,port,sid,type,username,password) values(?,?,?,?,?,?)";
 		Object[] params = {db.getIp(), db.getPort(), db.getSid(), db.getType(), db.getUsername(), db.getPassword()};
