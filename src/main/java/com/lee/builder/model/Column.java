@@ -58,4 +58,26 @@ public class Column {
 		this.javaType = javaType;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Column column = (Column) o;
+
+		if (columnName != null ? !columnName.equals(column.columnName) : column.columnName != null) return false;
+		if (columnComment != null ? !columnComment.equals(column.columnComment) : column.columnComment != null)
+			return false;
+		if (columnType != null ? !columnType.equals(column.columnType) : column.columnType != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = columnName != null ? columnName.hashCode() : 0;
+		result = 31 * result + (columnComment != null ? columnComment.hashCode() : 0);
+		result = 31 * result + (columnType != null ? columnType.hashCode() : 0);
+		return result;
+	}
 }

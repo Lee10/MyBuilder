@@ -9,6 +9,7 @@ import com.lee.builder.service.IGengerateService;
 import com.lee.builder.service.impl.DatabaseServiceImpl;
 import com.lee.builder.service.impl.GenerateServiceImpl;
 import com.lee.builder.utils.DBUtils;
+import com.lee.builder.utils.JsonUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -56,9 +57,6 @@ public class MainWin implements Initializable {
 	 **/
 	@FXML
 	private ComboBox tableComboBox;
-	/** 新增数据源按钮 **/
-	//@FXML
-	//private Button add;
 	/**
 	 * 字段列表
 	 **/
@@ -87,6 +85,7 @@ public class MainWin implements Initializable {
 	private CheckBox service;
 	@FXML
 	private CheckBox controller;
+
 	/**
 	 * 包名
 	 **/
@@ -97,7 +96,9 @@ public class MainWin implements Initializable {
 	 **/
 	@FXML
 	private TextField path;
-	/** 打印日志 **/
+	/**
+	 * 打印日志
+	 **/
 	@FXML
 	private TextArea log;
 
@@ -114,6 +115,10 @@ public class MainWin implements Initializable {
 	 * 选中的列
 	 **/
 	private List<Column> selectedColumns;
+	/**
+	 * 所有的列
+	 **/
+	private List<CheckBoxColumn> checkBoxColumns;
 
 	/**
 	 * 打开新增数据源界面
@@ -203,8 +208,9 @@ public class MainWin implements Initializable {
 		List<Database> list = listDatabase(new Database());
 		List<String> strList = new ArrayList<String>();
 		if (CollectionUtils.isEmpty(list)) return strList;
-		for (Database database : list) {
-			strList.add(DBUtils.buildUrl(database));
+		for (Database db : list) {
+			//type|ip|port|sid
+			strList.add(db.getType() + "|" + db.getIp() + "|" + db.getPort() + "|" + db.getSid());
 		}
 		return strList;
 	}
@@ -221,9 +227,21 @@ public class MainWin implements Initializable {
 		StringBuilder sql = new StringBuilder("select * from database where 1=1");
 
 		List<Object> objList = new ArrayList<Object>();
-		if (StringUtils.isNoneEmpty(db.getUrl())) {
-			sql.append(" and url = ?");
-			objList.add(db.getUrl());
+		if (StringUtils.isNoneEmpty(db.getIp())) {
+			sql.append(" and ip = ?");
+			objList.add(db.getIp());
+		}
+		if (db.getPort() != null) {
+			sql.append(" and port = ?");
+			objList.add(db.getPort());
+		}
+		if (StringUtils.isNoneEmpty(db.getSid())) {
+			sql.append(" and sid = ?");
+			objList.add(db.getSid());
+		}
+		if (StringUtils.isNoneEmpty(db.getType())) {
+			sql.append(" and type = ?");
+			objList.add(db.getType());
 		}
 
 		Object[] params = objList.toArray();
@@ -255,8 +273,12 @@ public class MainWin implements Initializable {
 	 */
 	private void showTableByUrl(String url) {
 		//通过选择的url查询sqlite数据库database的数据库信息
+		String[] arr = url.split("\\|");
 		selectedDB = new Database();
-		selectedDB.setUrl(url);
+		selectedDB.setType(arr[0]);
+		selectedDB.setIp(arr[1]);
+		selectedDB.setPort(Integer.valueOf(arr[2]));
+		selectedDB.setSid(arr[3]);
 		List<Database> dbList = listDatabase(selectedDB);
 
 		List<String> tableNames = null;
@@ -304,7 +326,7 @@ public class MainWin implements Initializable {
 	private void showColumnByTableName(String tableName) {
 		Table table = listTable(tableName, selectedDB);
 		List<Column> columns = table.getColumns();
-		List<CheckBoxColumn> checkBoxColumns = new ArrayList<CheckBoxColumn>();
+		checkBoxColumns = new ArrayList<CheckBoxColumn>();
 		for (Column c : columns) {
 			CheckBoxColumn cbColumn = new CheckBoxColumn(c.getColumnName(), c.getColumnName(), c.getColumnType());
 			checkBoxColumns.add(cbColumn);
@@ -330,6 +352,53 @@ public class MainWin implements Initializable {
 		return table;
 	}
 
+	/**
+	 * 全选
+	 *
+	 * @param event
+	 */
+	@FXML
+	public void checkAll(ActionEvent event) {
+		if (CollectionUtils.isEmpty(checkBoxColumns)) return;
+		for (CheckBoxColumn boxColumn : checkBoxColumns) {
+			boxColumn.getCb().setSelected(true);
+		}
+	}
+
+	/**
+	 * 反选
+	 *
+	 * @param event
+	 */
+	@FXML
+	public void inverse(ActionEvent event) {
+		if (CollectionUtils.isEmpty(checkBoxColumns)) return;
+		//初始化 selectedColumns
+		ObservableList<CheckBoxColumn> list = tableView.getItems();
+		selectedColumns = new ArrayList<Column>();
+		for (CheckBoxColumn o : list) {
+			if (o.getCb().isSelected()) {
+				Column column = new Column(o.getColumnName(), o.getColumnComment(), o.getColumnType());
+				selectedColumns.add(column);
+			}
+		}
+		if (CollectionUtils.isEmpty(selectedColumns)) {
+			for (CheckBoxColumn c : checkBoxColumns) {
+				c.getCb().setSelected(true);
+				Column column = new Column(c.getColumnName(), c.getColumnComment(), c.getColumnType());
+				selectedColumns.add(column);
+			}
+		}else {
+			Column column = null;
+			for (CheckBoxColumn boxColumn : checkBoxColumns) {
+				column = new Column(boxColumn.getColumnName(), boxColumn.getColumnComment(), boxColumn.getColumnType());
+				if (selectedColumns.contains(column)) boxColumn.getCb().setSelected(false);
+				else boxColumn.getCb().setSelected(true);
+			}
+		}
+
+	}
+
 
 	/**
 	 * 生成文件
@@ -347,7 +416,6 @@ public class MainWin implements Initializable {
 			}
 		}
 		selectedTable.setColumns(selectedColumns);
-		log.setEditable(false);
 		boolean flag = false;
 		if (mapper.isSelected()) {
 			flag = false;

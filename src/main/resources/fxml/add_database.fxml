@@ -4,10 +4,10 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <GridPane alignment="CENTER" hgap="10" vgap="10"
           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lee.builder.controller.AddDatabase">
@@ -20,22 +20,19 @@
 	</columnConstraints>
 
 	<children>
-
 		<Label text="数据源类型" GridPane.rowIndex="1"/>
-		<Label text="host" GridPane.rowIndex="2"/>
-		<Label text="post" GridPane.rowIndex="3"/>
-		<Label text="sid" GridPane.rowIndex="4"/>
-		<Label text="用户名" GridPane.rowIndex="5"/>
-		<Label text="密码" GridPane.rowIndex="6"/>
-
 		<ComboBox GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="180.0"
 		          fx:id="databaseTypeComboBox" onMouseClicked="#showDatabase"/>
+		<Label text="host" GridPane.rowIndex="2"/>
 		<TextField fx:id="host" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+		<Label text="post" GridPane.rowIndex="3"/>
 		<TextField fx:id="post" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+		<Label text="sid" GridPane.rowIndex="4"/>
 		<TextField fx:id="sid" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+		<Label text="用户名" GridPane.rowIndex="5"/>
 		<TextField fx:id="username" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+		<Label text="密码" GridPane.rowIndex="6"/>
 		<TextField fx:id="password" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-
 		<HBox GridPane.rowIndex="7" GridPane.columnSpan="2" alignment="CENTER">
 			<children>
 				<Button text="测试连接" mnemonicParsing="false"
@@ -44,6 +41,7 @@
 				        fx:id="save" onAction="#saveButtontAction"/>
 			</children>
 		</HBox>
+		<TextArea fx:id="log" GridPane.rowIndex="8" GridPane.columnSpan="3" editable="false"/>
 
 	</children>
 </GridPane>

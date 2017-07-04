@@ -42,15 +42,17 @@
 		<Label text="表名" GridPane.rowIndex="2"/>
 		<ComboBox fx:id="tableComboBox" onAction="#tableSelectedAction"
 		          GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="160.0"/>
-		<Separator GridPane.rowIndex="3"  GridPane.columnSpan="3"/>
-		<VBox GridPane.rowIndex="4" GridPane.columnSpan="3" alignment="TOP_LEFT">
+		<Label text="表字段" GridPane.rowIndex="3"/>
+		<Separator GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+		<Button onAction="#checkAll" text="全选" GridPane.rowIndex="4"/>
+		<Button onAction="#inverse" text="反选" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+		<VBox GridPane.rowIndex="5" GridPane.columnSpan="3" alignment="TOP_LEFT">
 			<children>
-				<Label text="表字段"/>
 				<TableView fx:id="tableView">
-				<columns>
-				<TableColumn fx:id="cb" prefWidth="200.0" text="字段名"/>
-				<TableColumn fx:id="columnComment" prefWidth="200.0" text="注释"/>
-				</columns>
+					<columns>
+						<TableColumn fx:id="cb" prefWidth="200.0" text="字段名"/>
+						<TableColumn fx:id="columnComment" prefWidth="200.0" text="注释"/>
+					</columns>
 				</TableView>
 			</children>
 		</VBox>
@@ -67,9 +69,9 @@
 		<TextField fx:id="packageName" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
 		<Label text="路径:" GridPane.rowIndex="10"/>
 		<TextField fx:id="path" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
-		<Button text="请选择" onAction="#browse" alignment="CENTER"
+		<Button text="请选择" onAction="#browse"
 		        GridPane.rowIndex="10" GridPane.columnIndex="2"/>
-		<TextArea fx:id="log" GridPane.rowIndex="11" GridPane.columnSpan="3"/>
+		<TextArea fx:id="log" GridPane.rowIndex="11" GridPane.columnSpan="3" editable="false"/>
 		<VBox GridPane.rowIndex="12" GridPane.columnSpan="3" alignment="CENTER">
 			<children>
 				<Button text="生成" onAction="#create" prefWidth="150.0" mnemonicParsing="false"/>

@@ -4,11 +4,14 @@ import com.lee.builder.model.Database;
 import com.lee.builder.utils.DBUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -35,6 +38,12 @@ public class AddDatabase implements Initializable {
 	private TextField username;
 	@FXML
 	private TextField password;
+	@FXML
+	private TextArea log;
+	/**
+	 * 测试连接是否成功
+	 */
+	private boolean flag;
 
 	/**
 	 * 显示下拉选数据库类型
@@ -52,12 +61,16 @@ public class AddDatabase implements Initializable {
 	 */
 	@FXML
 	private void connTestButtonAction() {
+		log.clear();
+		flag = false;
 		Connection conn = null;
 		try {
 			conn = DBUtils.getConnecttion(getDatabase());
-			System.out.println("连接成功");
+			flag = true;
+			log.appendText("测试连接成功\n");
 		} catch (Exception e) {
-			System.out.println("连接失败");
+			log.appendText("测试连接失败\n");
+			log.appendText(e.toString());
 		}
 
 	}
@@ -66,19 +79,31 @@ public class AddDatabase implements Initializable {
 	 * 保存新增数据库信息
 	 */
 	@FXML
-	private void saveButtontAction() {
+	private void saveButtontAction(ActionEvent event) {
+		log.clear();
+		if (!flag) {
+			log.appendText("测试连接失败,无法保存");
+			return;
+		}
 		Database sqlite = new Database();
 		sqlite.setType(DBUtils.DB_TYPE_SQLITE);
 		sqlite.setSid("E:\\work\\code\\MyBuilder\\src\\main\\resources\\conf.db");
 		Database db = getDatabase();
-		String sql = "insert or replace into database(ip,port,sid,type,username,password,url) values(?,?,?,?,?,?,?)";
-		Object[] params = {db.getIp(), db.getPort(), db.getSid(), db.getType(), db.getUsername(), db.getPassword(),db.getUrl()};
+		String sql = "insert or replace into database(ip,port,sid,type,username,password) values(?,?,?,?,?,?)";
+		Object[] params = {db.getIp(), db.getPort(), db.getSid(), db.getType(), db.getUsername(), db.getPassword()};
 
 		try {
 			int count = DBUtils.update(sqlite, sql, params);
 			System.out.println(count > 0 ? "入库成功" : "入库失败");
+			if (count>0){
+				Stage stage = (Stage) MainWin.getWindow(event);
+				stage.close();
+
+			}else {
+				log.appendText("入库失败");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.appendText(e.toString());
 		}
 	}
 
@@ -95,7 +120,6 @@ public class AddDatabase implements Initializable {
 		database.setSid(sid.getText());
 		database.setUsername(username.getText());
 		database.setPassword(password.getText());
-		database.setUrl(DBUtils.buildUrl(database));
 		return database;
 	}
 
