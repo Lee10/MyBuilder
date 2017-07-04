@@ -9,7 +9,6 @@ import com.lee.builder.service.IGengerateService;
 import com.lee.builder.service.impl.DatabaseServiceImpl;
 import com.lee.builder.service.impl.GenerateServiceImpl;
 import com.lee.builder.utils.DBUtils;
-import com.lee.builder.utils.JsonUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -40,6 +39,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -119,6 +119,8 @@ public class MainWin implements Initializable {
 	 * 所有的列
 	 **/
 	private List<CheckBoxColumn> checkBoxColumns;
+	
+	public static String fileSeparator = System.getProperty("file.separator");
 
 	/**
 	 * 打开新增数据源界面
@@ -223,7 +225,7 @@ public class MainWin implements Initializable {
 	private List<Database> listDatabase(Database db) {
 		Database sqlite = new Database();
 		sqlite.setType(DBUtils.DB_TYPE_SQLITE);
-		sqlite.setSid("E:\\work\\code\\MyBuilder\\src\\main\\resources\\conf.db");
+		sqlite.setSid(MainWin.class.getClassLoader().getResource("conf.db").getPath());
 		StringBuilder sql = new StringBuilder("select * from database where 1=1");
 
 		List<Object> objList = new ArrayList<Object>();
@@ -416,38 +418,43 @@ public class MainWin implements Initializable {
 			}
 		}
 		selectedTable.setColumns(selectedColumns);
+		
+		IGengerateService gengerateService = new GenerateServiceImpl();
+		String className = capFirstColumnName(selectedTable.getTableName());
+		
+		Map<String, Object> convertResultMap = gengerateService.convertColumnType(selectedTable);
+		selectedTable = (Table) convertResultMap.get("table");
+		List<String> packageList = (List<String>) convertResultMap.get("packageList");
+		
 		boolean flag = false;
 		if (mapper.isSelected()) {
-			flag = false;
+			flag = gengerateService.generateMapper("MapperTemplete.ftl", packageName.getText(), path.getText() + fileSeparator + className + "Mapper.xml", selectedTable, selectedDB.getType());
 			if (flag) log.appendText("生成mapper文件成功\n");
 			else log.appendText("生成mapper文件失败\n");
 		}
 		if (model.isSelected()) {
-			IDatabaseService databaseService = new DatabaseServiceImpl();
-			IGengerateService gengerateService = new GenerateServiceImpl();
-			String className = capFirstColumnName(selectedTable.getTableName());
 			File file = new File(path.getText());
 			//判断文件夹是否存在,如果不存在则创建文件夹
 			if (!file.exists()) file.mkdir();
-			flag = gengerateService.generateModelClass("ModelTemplete.java", packageName.getText(), path.getText() + "\\" + className + ".java", selectedTable);
+			flag = gengerateService.generateModelClass("ModelTemplete.ftl", packageName.getText(), path.getText() + fileSeparator + className + ".java", selectedTable, packageList);
 			if (flag) log.appendText("生成model文件成功\n");
 			else log.appendText("生成model文件失败\n");
 		}
 		if (dao.isSelected()) {
-			flag = false;
+			flag = gengerateService.generateDao("DaoTemplete.ftl", packageName.getText(), path.getText() + fileSeparator + "I" + className + "Dao.java", selectedTable);
 			if (flag) log.appendText("生成dao文件成功\n");
 			else log.appendText("生成dao文件失败\n");
 		}
 		if (service.isSelected()) {
-			flag = false;
+			flag = gengerateService.generateService("IServiceTemplete.ftl", packageName.getText(), path.getText() + fileSeparator + "I" + className + "Service.java", selectedTable);
+			flag = gengerateService.generateService("ServiceImplTemplete.ftl", packageName.getText(), path.getText() + fileSeparator + className + "ServiceImpl.java", selectedTable);
 			if (flag) log.appendText("生成service文件成功\n");
 			else log.appendText("生成service文件失败\n");
 		}
-		if (controller.isSelected()) {
-			flag = false;
+		/*if (controller.isSelected()) {
 			if (flag) log.appendText("生成controller文件成功\n");
 			else log.appendText("生成controller文件失败\n");
-		}
+		}*/
 	}
 
 	private String capFirstColumnName(String columnName) {

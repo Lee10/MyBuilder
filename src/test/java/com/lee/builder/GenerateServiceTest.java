@@ -35,9 +35,9 @@ public class GenerateServiceTest {
 		IGengerateService gengerateService = new GenerateServiceImpl();
 		
 		Database mysqlDB = new Database("localhost", 3306, "hn-sms", DBUtils.DB_TYPE_MYSQL, "root", "root");
-		Table table = databaseService.getTableByName("sms_pub_key_dic", mysqlDB);
-		boolean flag = gengerateService.generateModelClass("ModelTemplete.java", "com.lee.coderepo.model;", "C:\\Users\\lzw\\Desktop\\MyBuilder\\SmsPubKeyDic.java", table);
-		System.out.println(flag);
+		Table table = databaseService.getTableByName("sms_scheduler_job", mysqlDB);
+//		boolean flag = gengerateService.generateModelClass("ModelTemplete.java", "com.lee.coderepo.model;", "C:\\Users\\lzw\\Desktop\\MyBuilder\\SmsPubKeyDic.java", table);
+//		System.out.println(flag);
 	}
 	
 	@Test
@@ -47,10 +47,10 @@ public class GenerateServiceTest {
 		IGengerateService gengerateService = new GenerateServiceImpl();
 		
 		Database mysqlDB = new Database("localhost", 3306, "hn-sms", DBUtils.DB_TYPE_MYSQL, "root", "root");
-		Table table = databaseService.getTableByName("sms_pub_key_dic", mysqlDB);
+		Table table = databaseService.getTableByName("sms_scheduler_job", mysqlDB);
 		Map<String, Object> convertResultMap = gengerateService.convertColumnType(table);
 		table = (Table) convertResultMap.get("table");
-		boolean flag = gengerateService.generateMapper("MapperTemplete.ftl", "com.lee.coderepo", "/Users/lee/Downloads/test/SmsPubKeyDicMapper.xml", table, mysqlDB.getType());
+		boolean flag = gengerateService.generateMapper("MapperTemplete.ftl", "com.lee.coderepo", "/Users/lee/Downloads/test/smsSchedulerJobMapper.xml", table, mysqlDB.getType());
 		System.out.println(flag);
 	}
 	

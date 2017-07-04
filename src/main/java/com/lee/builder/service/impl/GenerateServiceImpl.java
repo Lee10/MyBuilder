@@ -19,14 +19,10 @@ import java.util.Map;
 public class GenerateServiceImpl implements IGengerateService {
 	
 	@Override
-	public boolean generateModelClass(String templeteName, String packageName, String path, Table table) {
+	public boolean generateModelClass(String templeteName, String packageName, String path, Table table, List<String> packageList) {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("packageName", packageName);
-		
-		Map<String, Object> convertResultMap = convertColumnType(table);
-		table = (Table) convertResultMap.get("table");
-		List<String> packageList = (List<String>) convertResultMap.get("packageList");
 		params.put("tableComment", table.getTableComment() + "(" + table.getTableName() + ")");
 		params.put("packageList", packageList);
 		params.put("modelName", capColumnName(table.getTableName()));
