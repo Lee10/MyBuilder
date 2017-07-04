@@ -39,12 +39,13 @@ public class FreemarkerUtils {
 		}
 	}
 	
-	public static void fprint(String name, Map<String, Object> root, String outFilePath){
+	public static boolean fprint(String name, Map<String, Object> root, String outFilePath){
 		BufferedWriter writer = null;
 		try{
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFilePath), "utf-8"));
 			Template template = getTemplate(name);
 			template.process(root, writer);
+			return true;
 		}catch (Exception e){
 			e.printStackTrace();
 		}finally {
@@ -54,6 +55,7 @@ public class FreemarkerUtils {
 				e.printStackTrace();
 			}
 		}
+		return false;
 	}
 
 }

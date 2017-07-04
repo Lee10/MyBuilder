@@ -1,4 +1,4 @@
-package ${packageName}
+package ${packageName}.model;
 
 <#list packageList as item>
 import ${item};
@@ -8,7 +8,7 @@ import ${item};
  * Created by lee on ${.now?string["yyyy/MM/dd HH:mm:ss"]}.
  * ${tableComment}
  */
-public class ${className?cap_first} {
+public class ${modelName?cap_first} {
 
 <#list columns as col>
 	/** ${col.columnComment} **/

@@ -29,13 +29,48 @@ public class GenerateServiceImpl implements IGengerateService {
 		List<String> packageList = (List<String>) convertResultMap.get("packageList");
 		params.put("tableComment", table.getTableComment() + "(" + table.getTableName() + ")");
 		params.put("packageList", packageList);
-		params.put("className", capColumnName(table.getTableName()));
+		params.put("modelName", capColumnName(table.getTableName()));
 		params.put("columns", table.getColumns());
-		
-		FreemarkerUtils.fprint(templeteName, params, path);
-		return true;
+		return FreemarkerUtils.fprint(templeteName, params, path);
 	}
 	
+	@Override
+	public boolean generateDao(String templeteName, String packageName, String path, Table table) {
+		
+		String modelName = StringUtils.capitalize(capColumnName(table.getTableName()));
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("packageName", packageName);
+		params.put("modelName", modelName);
+		return FreemarkerUtils.fprint(templeteName, params, path);
+	}
+	
+	@Override
+	public boolean generateMapper(String templeteName, String packageName, String path, Table table, String dbType) {
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		
+		String modelName = StringUtils.capitalize(capColumnName(table.getTableName()));
+		params.put("packageName", packageName);
+		params.put("modelName", modelName);
+		params.put("dbType", dbType);
+		params.put("tableName", table.getTableName());
+		params.put("columns", table.getColumns());
+		return FreemarkerUtils.fprint(templeteName, params, path);
+	}
+	
+	@Override
+	public boolean generateService(String templeteName, String packageName, String path, Table table) {
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		
+		String modelName = StringUtils.capitalize(capColumnName(table.getTableName()));
+		params.put("packageName", packageName);
+		params.put("modelName", modelName);
+		return FreemarkerUtils.fprint(templeteName, params, path);
+	}
+	
+	@Override
 	public Map<String, Object> convertColumnType(Table table) {
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();

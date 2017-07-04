@@ -13,5 +13,8 @@ public interface IGengerateService {
 	
 	List<String> strList = new ArrayList<String>();
 	boolean generateModelClass(String templeteName, String packageName, String path, Table table);
+	boolean generateDao(String templeteName, String packageName, String path, Table table);
+	boolean generateMapper(String templeteName, String packageName, String path, Table table, String dbType);
+	boolean generateService(String templeteName, String packageName, String path, Table table);
 	Map<String, Object> convertColumnType(Table table);
 }
