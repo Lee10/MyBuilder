@@ -94,12 +94,16 @@ public class AddDatabase implements Initializable {
 
 		try {
 			int count = DBUtils.update(sqlite, sql, params);
-			System.out.println(count > 0 ? "入库成功" : "入库失败");
-			if (count>0){
+			if (count > 0) {
 				Stage stage = (Stage) MainWin.getWindow(event);
 				stage.close();
+				//刷新主界面
+				//Stage stage1= (Stage) stage.getOwner();
+				//stage1.initModality(Modality.WINDOW_MODAL);
+				MainWin win = new MainWin();
+				win.showDatabase();
 
-			}else {
+			} else {
 				log.appendText("入库失败");
 			}
 		} catch (Exception e) {

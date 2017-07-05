@@ -119,7 +119,7 @@ public class MainWin implements Initializable {
 	 * 所有的列
 	 **/
 	private List<CheckBoxColumn> checkBoxColumns;
-	
+
 	public static String fileSeparator = System.getProperty("file.separator");
 
 	/**
@@ -193,7 +193,7 @@ public class MainWin implements Initializable {
 	/**
 	 * 生成数据源下拉选 (初始化时需要加载)
 	 */
-	private void showDatabase() {
+	public void showDatabase() {
 		List<String> strList = getDBUrl();
 		ObservableList<String> options = FXCollections.observableArrayList();
 		options.addAll(strList);
@@ -390,7 +390,7 @@ public class MainWin implements Initializable {
 				Column column = new Column(c.getColumnName(), c.getColumnComment(), c.getColumnType());
 				selectedColumns.add(column);
 			}
-		}else {
+		} else {
 			Column column = null;
 			for (CheckBoxColumn boxColumn : checkBoxColumns) {
 				column = new Column(boxColumn.getColumnName(), boxColumn.getColumnComment(), boxColumn.getColumnType());
@@ -418,40 +418,67 @@ public class MainWin implements Initializable {
 			}
 		}
 		selectedTable.setColumns(selectedColumns);
-		
+
 		IGengerateService gengerateService = new GenerateServiceImpl();
 		String className = capFirstColumnName(selectedTable.getTableName());
-		
+
 		Map<String, Object> convertResultMap = gengerateService.convertColumnType(selectedTable);
 		selectedTable = (Table) convertResultMap.get("table");
 		List<String> packageList = (List<String>) convertResultMap.get("packageList");
-		
+
+
+		//创建包名目录结构
+		String packages = packageName.getText().replace(".", fileSeparator);
+
+		String filePath = "";
+		File file = null;
 		boolean flag = false;
 		if (mapper.isSelected()) {
-			flag = gengerateService.generateMapper("MapperTemplete.ftl", packageName.getText(), path.getText() + fileSeparator + className + "Mapper.xml", selectedTable, selectedDB.getType());
+			filePath = path.getText() + fileSeparator + packages + fileSeparator + "mapper";
+			file = new File(filePath);
+			//判断存放路径文件夹是否存在,如果不存在则创建文件夹
+			if (!file.exists()) file.mkdirs();
+			flag = gengerateService.generateMapper("MapperTemplete.ftl", packageName.getText(), filePath + fileSeparator + className + "Mapper.xml", selectedTable, selectedDB.getType());
 			if (flag) log.appendText("生成mapper文件成功\n");
 			else log.appendText("生成mapper文件失败\n");
 		}
 		if (model.isSelected()) {
-			File file = new File(path.getText());
-			//判断文件夹是否存在,如果不存在则创建文件夹
-			if (!file.exists()) file.mkdir();
-			flag = gengerateService.generateModelClass("ModelTemplete.ftl", packageName.getText(), path.getText() + fileSeparator + className + ".java", selectedTable, packageList);
+			filePath = path.getText() + fileSeparator + packages + fileSeparator + "model";
+			file = new File(filePath);
+			//判断存放路径文件夹是否存在,如果不存在则创建文件夹
+			if (!file.exists()) file.mkdirs();
+			flag = gengerateService.generateModelClass("ModelTemplete.ftl", packageName.getText(), filePath + fileSeparator + className + ".java", selectedTable, packageList);
 			if (flag) log.appendText("生成model文件成功\n");
 			else log.appendText("生成model文件失败\n");
 		}
 		if (dao.isSelected()) {
-			flag = gengerateService.generateDao("DaoTemplete.ftl", packageName.getText(), path.getText() + fileSeparator + "I" + className + "Dao.java", selectedTable);
+			filePath = path.getText() + fileSeparator + packages + fileSeparator + "dao";
+			file = new File(filePath);
+			//判断存放路径文件夹是否存在,如果不存在则创建文件夹
+			if (!file.exists()) file.mkdirs();
+			flag = gengerateService.generateDao("DaoTemplete.ftl", packageName.getText(), filePath + fileSeparator + "I" + className + "Dao.java", selectedTable);
 			if (flag) log.appendText("生成dao文件成功\n");
 			else log.appendText("生成dao文件失败\n");
 		}
 		if (service.isSelected()) {
-			flag = gengerateService.generateService("IServiceTemplete.ftl", packageName.getText(), path.getText() + fileSeparator + "I" + className + "Service.java", selectedTable);
-			flag = gengerateService.generateService("ServiceImplTemplete.ftl", packageName.getText(), path.getText() + fileSeparator + className + "ServiceImpl.java", selectedTable);
+			filePath = path.getText() + fileSeparator + packages + fileSeparator + "service";
+			file = new File(filePath);
+			//判断存放路径文件夹是否存在,如果不存在则创建文件夹
+			if (!file.exists()) file.mkdirs();
+			file = new File(filePath + fileSeparator + "impl");
+			//判断存放路径文件夹是否存在,如果不存在则创建文件夹
+			if (!file.exists()) file.mkdirs();
+			flag = gengerateService.generateService("IServiceTemplete.ftl", packageName.getText(), filePath + fileSeparator + "I" + className + "Service.java", selectedTable);
+			flag = gengerateService.generateService("ServiceImplTemplete.ftl", packageName.getText(), filePath + fileSeparator + "impl" + fileSeparator + className + "ServiceImpl.java", selectedTable);
 			if (flag) log.appendText("生成service文件成功\n");
 			else log.appendText("生成service文件失败\n");
 		}
 		/*if (controller.isSelected()) {
+		filePath = path.getText() + fileSeparator + packages + fileSeparator + "controller";
+			System.out.println(filePath);
+			file = new File(filePath);
+			//判断存放路径文件夹是否存在,如果不存在则创建文件夹
+			if (!file.exists()) file.mkdirs();
 			if (flag) log.appendText("生成controller文件成功\n");
 			else log.appendText("生成controller文件失败\n");
 		}*/
