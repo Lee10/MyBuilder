@@ -37,7 +37,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -409,6 +411,8 @@ public class MainWin implements Initializable {
 	 */
 	@FXML
 	public void create(ActionEvent event) {
+		log.clear();
+		log.requestFocus();
 		ObservableList<CheckBoxColumn> list = tableView.getItems();
 		selectedColumns = new ArrayList<Column>();
 		for (CheckBoxColumn o : list) {
@@ -426,10 +430,10 @@ public class MainWin implements Initializable {
 		selectedTable = (Table) convertResultMap.get("table");
 		List<String> packageList = (List<String>) convertResultMap.get("packageList");
 
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");//设置日期格式
 
 		//创建包名目录结构
 		String packages = packageName.getText().replace(".", fileSeparator);
-
 		String filePath = "";
 		File file = null;
 		boolean flag = false;
@@ -439,8 +443,8 @@ public class MainWin implements Initializable {
 			//判断存放路径文件夹是否存在,如果不存在则创建文件夹
 			if (!file.exists()) file.mkdirs();
 			flag = gengerateService.generateMapper("MapperTemplete.ftl", packageName.getText(), filePath + fileSeparator + className + "Mapper.xml", selectedTable, selectedDB.getType());
-			if (flag) log.appendText("生成mapper文件成功\n");
-			else log.appendText("生成mapper文件失败\n");
+			if (flag) log.appendText(df.format(new Date()) + "-->生成mapper文件成功\n");
+			else log.appendText(df.format(new Date()) + "-->生成mapper文件失败\n");
 		}
 		if (model.isSelected()) {
 			filePath = path.getText() + fileSeparator + packages + fileSeparator + "model";
@@ -448,8 +452,8 @@ public class MainWin implements Initializable {
 			//判断存放路径文件夹是否存在,如果不存在则创建文件夹
 			if (!file.exists()) file.mkdirs();
 			flag = gengerateService.generateModelClass("ModelTemplete.ftl", packageName.getText(), filePath + fileSeparator + className + ".java", selectedTable, packageList);
-			if (flag) log.appendText("生成model文件成功\n");
-			else log.appendText("生成model文件失败\n");
+			if (flag) log.appendText(df.format(new Date()) + "-->生成model文件成功\n");
+			else log.appendText(df.format(new Date()) + "-->生成model文件失败\n");
 		}
 		if (dao.isSelected()) {
 			filePath = path.getText() + fileSeparator + packages + fileSeparator + "dao";
@@ -457,8 +461,8 @@ public class MainWin implements Initializable {
 			//判断存放路径文件夹是否存在,如果不存在则创建文件夹
 			if (!file.exists()) file.mkdirs();
 			flag = gengerateService.generateDao("DaoTemplete.ftl", packageName.getText(), filePath + fileSeparator + "I" + className + "Dao.java", selectedTable);
-			if (flag) log.appendText("生成dao文件成功\n");
-			else log.appendText("生成dao文件失败\n");
+			if (flag) log.appendText(df.format(new Date()) + "-->生成dao文件成功\n");
+			else log.appendText(df.format(new Date()) + "-->生成dao文件失败\n");
 		}
 		if (service.isSelected()) {
 			filePath = path.getText() + fileSeparator + packages + fileSeparator + "service";
@@ -470,8 +474,8 @@ public class MainWin implements Initializable {
 			if (!file.exists()) file.mkdirs();
 			flag = gengerateService.generateService("IServiceTemplete.ftl", packageName.getText(), filePath + fileSeparator + "I" + className + "Service.java", selectedTable);
 			flag = gengerateService.generateService("ServiceImplTemplete.ftl", packageName.getText(), filePath + fileSeparator + "impl" + fileSeparator + className + "ServiceImpl.java", selectedTable);
-			if (flag) log.appendText("生成service文件成功\n");
-			else log.appendText("生成service文件失败\n");
+			if (flag) log.appendText(df.format(new Date()) + "-->生成service文件成功\n");
+			else log.appendText(df.format(new Date()) + "-->生成service文件失败\n");
 		}
 		/*if (controller.isSelected()) {
 		filePath = path.getText() + fileSeparator + packages + fileSeparator + "controller";
