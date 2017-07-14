@@ -25,7 +25,7 @@ public class ${modelName}ServiceImpl implements I${modelName}Service {
 	@Override
 	public Long count(Map<String, Object> params){
 
-		int row = 0;
+		Long row = 0;
 		try{
 			row = this.${modelName?uncap_first}Dao.count(params);
 		}catch(Exception e){
