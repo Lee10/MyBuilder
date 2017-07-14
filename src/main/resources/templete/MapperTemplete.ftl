@@ -26,7 +26,7 @@
 		</#if>
 		<#if col.javaType == "Date">
 			<if test="${col.propertyName}Gte != null">and ${col.columnName} >= ${r"#{"}${col.propertyName}Gte}</if>
-			<if test="${col.propertyName}Lte != null">and ${col.columnName} <= ${r"#{"}${col.propertyName}Lte}</if>
+			<if test="${col.propertyName}Lte != null"><![CDATA[ and ${col.columnName} <= ${r"#{"}${col.propertyName}Lte}]]></if>
 		</#if>
 	</#list>
 	</sql>
