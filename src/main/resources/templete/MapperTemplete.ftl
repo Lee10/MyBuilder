@@ -54,7 +54,7 @@
 		<include refid="allField"/>
 		)values(
 			<#list columns as col>
-			${r"#{"}${col.columnName}, jdbcType=${col.columnType}}<#if col_has_next>,</#if>
+			${r"#{"}${col.propertyName}, jdbcType=${col.columnType}}<#if col_has_next>,</#if>
 			</#list>
 		)
 	</insert>

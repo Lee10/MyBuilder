@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import ${packageName}.model.${modelName};
 
-public interface I${modelName}Servcie {
+public interface I${modelName}Service {
 
 	List<${modelName}> list(Map<String, Object> params);
 	Long count(Map<String, Object> params);
