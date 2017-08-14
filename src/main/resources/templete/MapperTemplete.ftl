@@ -19,9 +19,9 @@
 			<if test="${col.propertyName} != null">and ${col.columnName} = ${r"#{"}${col.propertyName}}</if>
 		<#if col.javaType == "String">
 			<#if dbType == "mysql">
-			<if test="${col.propertyName}Like != null">and ${col.columnName} = concat("%", ${r"#{"}${col.propertyName}Like}, "%")</if>
+			<if test="${col.propertyName}Like != null">and ${col.columnName} like concat("%", ${r"#{"}${col.propertyName}Like}, "%")</if>
 			<#elseif dbType == "oracle">
-			<if test="${col.propertyName}Like != null">and ${col.columnName} = ("%"||${r"#{"}${col.propertyName}Like}||"%")</if>
+			<if test="${col.propertyName}Like != null">and ${col.columnName} like ("%"||${r"#{"}${col.propertyName}Like}||"%")</if>
 			</#if>
 		</#if>
 		<#if col.javaType == "Date">
